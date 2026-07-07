@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 def printHeader(header=''):
 	val = 60 - len(header)
 	line = '-'*int(val/2)
@@ -26,6 +28,25 @@ def printData(self, solution = dict()):
 		print(v)
 
 	print('='*60)
+
+def plotDiagram(self, solution):
+	i = 1
+	for k,v in solution.items():
+		if (v[1] == False):
+			continue
+
+		plt.figure(i)
+		i += 1
+		plt.title(k)
+
+		plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+		plt.xticks(list(set([round(n, 3) for n in self.dotList])))
+		plt.yticks(v[0])
+
+		plt.plot(self.dotList, v[0], 'o-')
+		plt.plot(self.dotList, [0]*len(self.dotList))
+
+	plt.show()
 
 def interactWithUser(self):
 	inp = "_"

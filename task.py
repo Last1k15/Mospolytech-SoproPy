@@ -6,9 +6,9 @@ from load import *
 from task_validate import *
 from task_io import *
 
-from task_tc_algo import *
-from task_torsion_algo import *
-from task_bend_algo import *
+from task_tc import *
+from task_torsion import *
+from task_bend import *
 
 # Общий класс решения задачи
 class Task:
@@ -24,11 +24,13 @@ class Task:
         self.sectionList = sorted(sectionList, key=lambda x: x.distance1)
         self.loadList = sorted(loadList, key=lambda x: x.distance)
         self.dotList = []
+        self.BIAS = 0.00005
 
     validateSections = validateSections
     validateLoads = validateLoads
     printData = printData
     interactWithUser = interactWithUser
+    plotDiagram = plotDiagram
 
     TensionCompressionAlgorithm = TensionCompressionAlgorithm
     TorsionAlgorithm = TorsionAlgorithm
@@ -37,15 +39,29 @@ class Task:
     def defineDots(self):
         for load in self.loadList:
             if (isinstance(load, DistrLoad)):
-                self.dotList.append(load.distance1)
-                self.dotList.append(load.distance2)
+                if (load.distance1 != 0):
+                    self.dotList.append(load.distance1 - self.BIAS)
+                self.dotList.append(load.distance2 - self.BIAS)
+                self.dotList.append(load.distance1 + self.BIAS)
+                if (load.distance2 != self.length):
+                    self.dotList.append(load.distance2 + self.BIAS)
 
-            else: self.dotList.append(load.distance)
+            else: 
+                if (load.distance != 0):
+                    self.dotList.append(load.distance - self.BIAS)
+                if (load.distance != self.length):
+                    self.dotList.append(load.distance + self.BIAS)
 
         for sect in self.sectionList:
-            self.dotList.append(sect.distance1)
-            self.dotList.append(sect.distance2)
+            if (sect.distance1 != 0):
+                self.dotList.append(sect.distance1 - self.BIAS)
+            self.dotList.append(sect.distance1 + self.BIAS)
+            self.dotList.append(sect.distance2 - self.BIAS)
+            if (sect.distance2 != self.length):
+                self.dotList.append(sect.distance2 + self.BIAS)
+
         self.dotList = sorted(set(self.dotList))
+        self.dotList[-1] -= self.BIAS
 
 
     def solve(self):
@@ -69,4 +85,5 @@ class Task:
                 solution = self.BendAlgorithm()
 
         self.printData(solution)
+        self.plotDiagram(solution)
         print("Task complete!")

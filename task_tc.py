@@ -4,7 +4,7 @@ def TensionCompressionAlgorithm(self):
 	displacementList = []
 	strainList = []
 
-	prevDot = self.dotList[-1] - 0.00005
+	prevDot = self.dotList[-1]
 	for dot in reversed(self.dotList):
 		normPower = 0
 		for load in reversed(self.loadList):
@@ -29,5 +29,5 @@ def TensionCompressionAlgorithm(self):
 		strainList.append(strain)
 		strain += displacementList[i]
 
-	solution = {"NORM POWERS":normPowerList, "NORM TENSIONS":normTensionList, "DISPLACEMENTS":displacementList, "STRAINS":strainList, "SAFETY FACTOR":safetyFactor}
+	solution = {"NORM POWERS":[normPowerList, True], "NORM TENSIONS":[normTensionList, True], "DISPLACEMENTS":[displacementList, False], "STRAINS":[strainList, True], "SAFETY FACTOR":[safetyFactor, False]}
 	return solution
