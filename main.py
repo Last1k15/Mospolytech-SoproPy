@@ -86,10 +86,10 @@ class Task:
             badBendTypes = self.taskType == self.TaskType.Bend and isinstance(load, TorsionMoment)
 
             if (badTensionCompressionTypes or badTorsionTypes or badBendTypes):
-                raise ValueError("Loads types are not valid")
+                raise ValueError("Load types are not valid")
 
             if (0 <= load.distance > self.length):
-                raise ValueError("Loads distances are not valid")
+                raise ValueError("Load distances are not valid")
 
     def defineDots(self):
         for load in self.loadList:
@@ -114,18 +114,21 @@ class Task:
             normTensionList = []
             displacementList = []
             strainList = []
+            prevDot = self.dotList[-1] - 0.00005
             for dot in reversed(self.dotList):
                 normPower = 0
                 for load in reversed(self.loadList):
-                    if (load.distance >= dot):
+                    if (load.distance > dot):
                         normPower += load.value
                     else: break
                 normPowerList.append(normPower)
                 for sect in reversed(self.sectionList):
                     if (sect.distance1 <= dot and sect.distance2 >= dot): 
                         normTensionList.append(normPower / sect.area)
-                        displacementList.append((normPower * (sect.distance2 - sect.distance1)) / (self.material.youngModulus * sect.area))
+                        print(sect.distance2 - dot)
+                        displacementList.append((normPower * (prevDot - dot)) / (self.material.youngModulus * sect.area))
                         break
+                prevDot = dot
             normPowerList = normPowerList[::-1]
             normTensionList = normTensionList[::-1]
             displacementList = displacementList[::-1]
@@ -171,26 +174,25 @@ class Task:
             except ValueError:
                 continue
 
-# раст-сж 
 
 myTaskType = Task.TaskType.TensionCompression
-LENGTH = 4
-AREA = 0.0025
-mySectList = []
-mySectList.append(Section(2*AREA, 0, 1))
-mySectList.append(Section(AREA, 2, 4))
-mySectList.append(Section(2*AREA, 1, 2))
-
-LOAD = 10*10**3
-myLoadList = []
-myLoadList.append(ConcPower(LOAD, 4))
-myLoadList.append(ConcPower(LOAD, 1))
-
+LENGTH = 2.3
+AREA = 12.5*10**(-4)
+LOAD = 90*10**3
 myMaterial = MaterialProperties(
-        youngModulus = 70*10**9,
+        youngModulus = 2*10**11,
         poissonsRatio = 0.31,
-        fluidityMargin = 50*10**6
+        fluidityMargin = 235*10**6
 )
+
+mySectList = []
+mySectList.append(Section(2*AREA, 0, 0.8))
+mySectList.append(Section(AREA, 0.8, 2.3))
+
+myLoadList = []
+myLoadList.append(ConcPower(4*LOAD, 0.4))
+myLoadList.append(ConcPower(-LOAD, 1.6))
+myLoadList.append(ConcPower(-LOAD, 2.3))
 
 myTask = Task(
         taskType = myTaskType,
@@ -201,8 +203,3 @@ myTask = Task(
 )
 
 myTask.solve()
-# myTask.interactWithUser()
-# attrs = vars(myTask)
-# print(', '.join("%s: %s" % item for item in attrs.items()))
-
-
