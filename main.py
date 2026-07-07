@@ -1,23 +1,23 @@
 from task import *
 
-myTaskType = Task.TaskType.TensionCompression
-L = 2.3
-A = 12.5*10**(-4)
-F = 90*10**3
+myTaskType = Task.TaskType.Torsion
+L = 2.1
 myMaterial = MaterialProperties(
-        youngModulus = 2*10**11,
-        poissonsRatio = 0.31,
-        fluidityMargin = 235*10**6
+        shearModulus = 8*10**10
 )
 
-mySectList = []
-mySectList.append(Section(2*A, 0, 0.8))
-mySectList.append(Section(A, 0.8, 2.3))
+D = 1*10**(-3)
 
+mySectList = []
+mySectList.append(RoundSection(outerDiameter = 65*D, distance1 = 0, distance2 = 0.7))
+mySectList.append(SquareSection(sideLength = 60*D, distance1 = 0.7, distance2 = 1.4))
+mySectList.append(RoundSection(outerDiameter = 70*D, innerDiameter = 35*D, distance1 = 1.4, distance2 = 2.1))
+
+F = 1*10**3
 myLoadList = []
-myLoadList.append(ConcPower(4*F, 0.4))
-myLoadList.append(ConcPower(-F, 1.6))
-myLoadList.append(ConcPower(-F, 2.3))
+myLoadList.append(TorsionMoment(value = 0.5*F, distance = 0.4))
+myLoadList.append(TorsionMoment(value = -0.6*F, distance = 0.8))
+myLoadList.append(TorsionMoment(value = 1.1*F, distance = 1.55))
 
 myTask = Task(
         taskType = myTaskType,

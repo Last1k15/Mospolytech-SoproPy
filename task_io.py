@@ -30,6 +30,7 @@ def printData(self, solution = dict()):
 	print('='*60)
 
 def plotDiagram(self, solution):
+	plt.rcParams['font.size'] = 8
 	i = 1
 	for k,v in solution.items():
 		if (v[1] == False):
