@@ -1,9 +1,14 @@
 from enum import Enum 
+
 from material import *
 from section import *
 from load import *
 from task_validate import *
 from task_io import *
+
+from task_tc_algo import *
+from task_torsion_algo import *
+from task_bend_algo import *
 
 # Общий класс решения задачи
 class Task:
@@ -25,6 +30,10 @@ class Task:
     printData = printData
     interactWithUser = interactWithUser
 
+    TensionCompressionAlgorithm = TensionCompressionAlgorithm
+    TorsionAlgorithm = TorsionAlgorithm
+    BendAlgorithm = BendAlgorithm
+
     def defineDots(self):
         for load in self.loadList:
             if (isinstance(load, DistrLoad)):
@@ -40,43 +49,24 @@ class Task:
 
 
     def solve(self):
+
+        print("Validating data...", end="")
         self.validateSections()
         self.validateLoads()
-        if (self.taskType == self.TaskType.TensionCompression):
-            self.defineDots()
-            normPowerList = []
-            normTensionList = []
-            displacementList = []
-            strainList = []
+        print("OK!")
 
-            prevDot = self.dotList[-1] - 0.00005
-            for dot in reversed(self.dotList):
-                normPower = 0
-                for load in reversed(self.loadList):
-                    if (load.distance > dot):
-                        normPower += load.value
-                    else: break
-                normPowerList.append(normPower)
-                for sect in reversed(self.sectionList):
-                    if (sect.distance1 <= dot and sect.distance2 >= dot): 
-                        normTensionList.append(normPower / sect.area)
-                        displacementList.append((normPower * (prevDot - dot)) / (self.material.youngModulus * sect.area))
-                        break
-                prevDot = dot
+        self.defineDots()
 
-            normPowerList = normPowerList[::-1]
-            normTensionList = normTensionList[::-1]
-            displacementList = displacementList[::-1]
-            safetyFactor = self.material.fluidityMargin / max([abs(n) for n in normTensionList])
+        solution = dict()
+        match self.taskType:
+            case self.TaskType.TensionCompression:
+                solution = self.TensionCompressionAlgorithm()
 
-            strain = 0
-            for i in range(len(self.dotList)):
-                strainList.append(strain)
-                strain += displacementList[i]
+            case self.TaskType.Torsion:
+                solution = self.TorsionAlgorithm()
 
-            self.printData()
-            print("normPowers:\n", normPowerList)
-            print("normTensions:\n",normTensionList)
-            print("displacements:\n",displacementList)
-            print("strains:\n",strainList)
-            print("safetyFactor:\n",safetyFactor)
+            case self.TaskType.Bend:
+                solution = self.BendAlgorithm()
+
+        self.printData(solution)
+        print("Task complete!")

@@ -4,7 +4,7 @@ class Load:
         self.value = value
         self.distance = distance
     def __repr__(self):
-        return f"(val: {self.value};dist: {self.distance})"
+        return f"(val: {self.value}; dist: {self.distance}; type: {self.__class__.__name__})"
 
 
 # Сосредоточенная сила
@@ -20,7 +20,7 @@ class DistrLoad(Load):
         self.distance2 = distance2
 
     def __repr__(self):
-        return f"(val: {self.value};dist1: {self.distance1};dist2: {self.distance2})"
+        return f"(val: {self.value}; dist1: {self.distance1}; dist2: {self.distance2})"
 
 
 # Изгибный момент

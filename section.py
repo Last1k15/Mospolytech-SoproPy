@@ -6,4 +6,4 @@ class Section:
         self.distance2 = distance2
         self.inertiaMoment = inertiaMoment
     def __repr__(self):
-        return f"(area: {self.area};dist1: {self.distance1};dist2: {self.distance2};inertiaMoment: {self.inertiaMoment})"
+        return f"(area: {self.area}; dist1: {self.distance1}; dist2: {self.distance2}; inertiaMoment: {self.inertiaMoment})"

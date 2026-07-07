@@ -1,17 +1,31 @@
-def printData(self):
-	print(f"{self.taskType.name = }")
+def printHeader(header=''):
+	val = 60 - len(header)
+	line = '-'*int(val/2)
+	print(line + header + line)
+
+def printData(self, solution = dict()):
+	print('='*60)
+
+	printHeader("TASK INFO")
+	print(self.taskType.name)
 	print(self.material)
 
-	print("\n\nSECTIONS")
+	printHeader("SECTIONS")
 	for sect in self.sectionList:
 		print(sect)
 
-	print("\n\nLOADS")
+	printHeader("LOADS")
 	for load in self.loadList:
-		print(load,type(load))
-	print("\n\nDOTS")
+		print(load)
+
+	printHeader("DOTS")
 	print(self.dotList)
-	print("\n\n")
+
+	for k,v in solution.items():
+		printHeader(k)
+		print(v)
+
+	print('='*60)
 
 def interactWithUser(self):
 	inp = "_"
