@@ -1,23 +1,21 @@
 from task import *
 
-myTaskType = Task.TaskType.Torsion
-L = 2.1
+myTaskType = Task.TaskType.Bend
+L = 5
+
 myMaterial = MaterialProperties(
-        shearModulus = 8*10**10
+        youngsModulus = 210e9,
+        poissonsRatio = 0.35
 )
 
-D = 1*10**(-3)
-
+D = 1E-2
 mySectList = []
-mySectList.append(RoundSection(outerDiameter = 65*D, distance1 = 0, distance2 = 0.7))
-mySectList.append(SquareSection(sideLength = 60*D, distance1 = 0.7, distance2 = 1.4))
-mySectList.append(RoundSection(outerDiameter = 70*D, innerDiameter = 35*D, distance1 = 1.4, distance2 = 2.1))
+mySectList.append(IBeamSection(distance1 = 0, distance2 = 5, width = 14*D, height = 20*D, innerThickness = 6*D, thickness1 = 6*D, thickness2 = 6*D))
 
-F = 1*10**3
+F = 1e3
 myLoadList = []
-myLoadList.append(TorsionMoment(value = 0.5*F, distance = 0.4))
-myLoadList.append(TorsionMoment(value = -0.6*F, distance = 0.8))
-myLoadList.append(TorsionMoment(value = 1.1*F, distance = 1.55))
+myLoadList.append(ShearForce(distance = 4, value = F, direction=Direction.Down))
+myLoadList.append(BendMoment(distance = 1, value = F, direction=Direction.CounterClockwise))
 
 myTask = Task(
         taskType = myTaskType,

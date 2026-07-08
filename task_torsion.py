@@ -1,7 +1,5 @@
+from load import *
 def TorsionAlgorithm(self):
-	if (self.material.shearModulus == 0):
-		self.material.shearModulus = self.material.youngModulus / (2 * (1 + self.material.poissonsRatio))
-
 	torsionMomentList = []
 	angularTensionList = []
 	displacementList = []
@@ -12,7 +10,8 @@ def TorsionAlgorithm(self):
 		torsionMoment = 0
 		for load in reversed(self.loadList):
 			if (load.distance > dot):
-				torsionMoment += load.value
+				sign = (-1 if (load.direction == Direction.Clockwise) else 1)
+				torsionMoment += load.value * sign
 			else: break
 		torsionMomentList.append(torsionMoment)
 		for sect in reversed(self.sectionList):
