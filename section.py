@@ -2,7 +2,7 @@ from math import pi
 
 # Произвольное cечение
 class Section:
-    def __init__(self, distance1 : int, distance2 : int, area : int):
+    def __init__(self, distance1 : int = 0, distance2 : int = 0, area : int = 0):
         self.area = area
         self.distance1 = distance1
         self.distance2 = distance2
@@ -39,6 +39,7 @@ class ThickRoundSection(RoundSection):
         self.polarInertiaMoment = pi * (outerDiameter ** 4 - innerDiameter ** 4) / 32
         self.axialInertiaMoment = pi * (outerDiameter ** 4 - innerDiameter ** 4) / 64
         self.sectionModulus = pi * (outerDiameter ** 3 - innerDiameter ** 3) / 16
+
     def __repr__(self):
         return f"distance1: {self.distance1}; "\
                 f"distance2: {self.distance2}; "\
@@ -89,13 +90,14 @@ class IBeamSection(Section):
                 f"axialInertiaMoment: {self.axialInertiaMoment}; "\
 
 # Полое прямоугольное сечение
-class HollowRectangleSection(Section):
+class HollowSquareSection(Section):
     def __init__(self, distance1 : int, distance2 : int, sideLength : int, thickness : int):
         area = 4 * thickness * (sideLength - thickness)
         super().__init__(distance1, distance2, area)
         self.sideLength = sideLength
         self.thickness = thickness
         self.axialInertiaMoment = (sideLength ** 4 - (sideLength - 2 * thickness) ** 4) / 12
+
     def __repr__(self):
         return f"distance1: {self.distance1}; "\
                 f"distance2: {self.distance2}; "\

@@ -13,11 +13,11 @@ from task_bend import *
 # Глобальный класс задачи
 class Task:
     class TaskType(Enum):
-        TensionCompression = 1 # Растяжение-сжатие
-        Torsion = 2 # Кручение
-        Bend = 3 # Изгиб
+        TensionCompression = 0 # Растяжение-сжатие
+        Torsion = 1 # Кручение
+        Bend = 2 # Изгиб
 
-    def __init__(self, taskType : TaskType = None, material : MaterialProperties = None, length : int = 0, sectionList : list[Section] = None, loadList : list[LoadInterface] = None):
+    def __init__(self, taskType : TaskType = None, material : MaterialProperties = MaterialProperties(), length : int = 0, sectionList : list[Section] = [], loadList : list[LoadInterface] = []):
         self.taskType = taskType # тип решаемой задачи
         self.material = material # материал стержня
         self.length = length # длина стержня
@@ -29,7 +29,7 @@ class Task:
     validateSections = validateSections
     validateLoads = validateLoads
     printData = printData
-    interactWithUser = interactWithUser
+    prompt = prompt
     plotDiagram = plotDiagram
 
     TensionCompressionAlgorithm = TensionCompressionAlgorithm

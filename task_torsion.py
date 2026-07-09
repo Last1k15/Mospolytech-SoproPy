@@ -1,34 +1,51 @@
 from load import *
 def TorsionAlgorithm(self):
-	torsionMomentList = []
-	angularTensionList = []
-	displacementList = []
-	strainList = []
+	torqueList = [] # Крутящие моменты
+	shearStressList = [] # Касательные напряжения
+	deformationList = [] # Угловые деформации
+	displacementList = [] # Угловые перемещения
 
 	prevDot = self.dotList[-1]
 	for dot in reversed(self.dotList):
-		torsionMoment = 0
+
+		torque = 0
+
+		# Для каждой точки рассмотрим нагрузки справа от неё
 		for load in reversed(self.loadList):
-			if (load.distance > dot):
-				sign = (-1 if (load.direction == Direction.Clockwise) else 1)
-				torsionMoment += load.value * sign
+			passedLoad = (load.distance > dot)
+			if (passedLoad): # Прошли нагрузку
+				sign = (-1 if (load.direction == Direction.Clockwise) else 1) # правило знаков при кручении
+				torque += load.value * sign
 			else: break
-		torsionMomentList.append(torsionMoment)
+		torqueList.append(torsionMoment)
+
+		# Найдем сечение, в котором расположена точка
 		for sect in reversed(self.sectionList):
-			if (sect.distance1 <= dot and sect.distance2 >= dot): 
-				angularTensionList.append(torsionMoment / sect.resistanceMoment)
-				displacementList.append((torsionMoment * (prevDot - dot)) / (self.material.shearModulus * sect.inertiaMoment))
+			insideSection = (sect.distance1 <= dot and sect.distance2 >= dot)
+			if (insideSection): # точка в этом сечении
+				shearStressList.append(torque / sect.resistanceMoment)
+				deformationList.append((torque * (prevDot - dot)) / (self.material.shearModulus * sect.inertiaMoment))
 				break
+
 		prevDot = dot
 
-	torsionMomentList = torsionMomentList[::-1]
-	angularTensionList = angularTensionList[::-1]
-	displacementList = displacementList[::-1]
+	# Массивы заполнялись по движению к заделке, перевернем, чтобы получить массивы от заделки
+	torqueList = torqueList[::-1]
+	shearStressList = shearStressList[::-1]
+	deformationList = deformationList[::-1]
 
-	strain = 0
+	# При отдалении от заделки угловые перемещения накапливаются
+	displacement = 0
 	for i in range(len(self.dotList)):
-		strainList.append(strain)
-		strain += displacementList[i]
+		displacementList.append(displacement)
+		displacement += deformationList[i]
 
-	solution = {"TORSION MOMENT":[torsionMomentList, True], "ANGULAR TENSIONS":[angularTensionList, True], "DISPLACEMENTS":[displacementList, False], "STRAINS":[strainList, True]}
+	# Булево значение "изобразить на эпюре"
+	solution = {
+		"TORSION MOMENT" : [torqueList, True],
+		"ANGULAR TENSIONS" : [shearStressList, True],
+		"DEFORMATIONS" : [deformationList, False],
+		"DISPLACEMENTS" : [displacementList, True]
+	}
+
 	return solution
