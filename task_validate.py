@@ -33,8 +33,8 @@ def validateLoads(self):
 
         # Проверим границы распределенной нагрузки
         if (isinstance(load, DistrLoad)):
-            badRelativeDistances = (load.distance1 >= load.distance2)
-            outOfBounds1 = (load.distance1 <= 0) or (load.distance1 > self.length)
+            badRelativeDistances = (load.distance >= load.distance2)
+            outOfBounds1 = (load.distance <= 0) or (load.distance > self.length)
             outOfBounds2 = (load.distance2 <= 0) or (load.distance2 > self.length)
             if (badRelativeDistances or outOfBounds1 or outOfBounds2):
                 raise ValueError("Load distances are not valid")

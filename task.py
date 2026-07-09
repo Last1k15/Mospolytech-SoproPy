@@ -41,12 +41,13 @@ class Task:
 
         # Каждую ключевую точку разделим на две, отличающиеся на BIAS, чтобы рассмотреть случай до и после учета нагрузки в этой точке
 
+        distrDots = []
+
         # Внешняя нагрузка - ключевая точка
         for load in self.loadList:
 
              # Рассмотрим обе границы распределенной нагрузки
             if (isinstance(load, DistrLoad)):
-                # не создаем точки за пределами стержня
                 if (load.distance != 0):
                     self.dotList.append(load.distance - self.BIAS)
                 self.dotList.append(load.distance2 - self.BIAS)
@@ -54,11 +55,21 @@ class Task:
                 if (load.distance2 != self.length):
                     self.dotList.append(load.distance2 + self.BIAS)
 
+                distrDots.append((load.distance, load.distance2))
+                self.dotList.append((load.distance + load.distance2)/2)
+
             else: 
                 if (load.distance != 0):
                     self.dotList.append(load.distance - self.BIAS)
                 if (load.distance != self.length):
                     self.dotList.append(load.distance + self.BIAS)
+                if (distrDots):
+                    for d1, d2 in distrDots:
+                        if (load.distance == d1 or load.distance == d2):
+                            continue
+                        self.dotList.append((d1 + load.distance)/2)
+                        self.dotList.append((d2 + load.distance)/2)
+
 
         # Стык разных сечений - ключевая точка
         for sect in self.sectionList:

@@ -75,6 +75,7 @@ def plotDiagram(self, solution):
 		# Научная нотация
 		plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
 
+		print(k)
 		# На оси абсцисс предотвратим наложение смежных величин, отличных на BIAS - округлим и удалим дубликаты
 		plt.xticks(list(set([round(n, 3) for n in self.dotList])))
 		plt.yticks(v[0])

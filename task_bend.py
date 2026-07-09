@@ -6,7 +6,6 @@ def BendAlgorithm(self):
 	for dot in reversed(self.dotList):
 		shearForce = 0
 		bendMoment = 0
-
 		for load in reversed(self.loadList):
 			match load:
 				case DistrLoad():
@@ -28,6 +27,7 @@ def BendAlgorithm(self):
 					if (load.distance > dot):
 						bendSign = (-1 if (load.direction == Direction.Clockwise) else 1) # правило знаков для изгибающих моментов
 						bendMoment += load.value * bendSign
+
 
 		shearForceList.append(shearForce)
 		bendMomentList.append(bendMoment)
