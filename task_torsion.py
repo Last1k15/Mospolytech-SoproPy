@@ -17,14 +17,14 @@ def TorsionAlgorithm(self):
 				sign = (-1 if (load.direction == Direction.Clockwise) else 1) # правило знаков при кручении
 				torque += load.value * sign
 			else: break
-		torqueList.append(torsionMoment)
+		torqueList.append(torque)
 
 		# Найдем сечение, в котором расположена точка
 		for sect in reversed(self.sectionList):
 			insideSection = (sect.distance1 <= dot and sect.distance2 >= dot)
 			if (insideSection): # точка в этом сечении
-				shearStressList.append(torque / sect.resistanceMoment)
-				deformationList.append((torque * (prevDot - dot)) / (self.material.shearModulus * sect.inertiaMoment))
+				shearStressList.append(torque / sect.sectionModulus)
+				deformationList.append((torque * (prevDot - dot)) / (self.material.shearModulus * sect.axialInertiaMoment))
 				break
 
 		prevDot = dot
@@ -42,8 +42,8 @@ def TorsionAlgorithm(self):
 
 	# Булево значение "изобразить на эпюре"
 	solution = {
-		"TORSION MOMENT" : [torqueList, True],
-		"ANGULAR TENSIONS" : [shearStressList, True],
+		"TORQUE" : [torqueList, True],
+		"SHEAR STRESS" : [shearStressList, True],
 		"DEFORMATIONS" : [deformationList, False],
 		"DISPLACEMENTS" : [displacementList, True]
 	}

@@ -38,7 +38,7 @@ def BendAlgorithm(self):
 
 	# Булево значение "изобразить на эпюре"
 	solution = {
-		"SHEAR POWERS" : [shearForceList, True],
+		"SHEAR FORCES" : [shearForceList, True],
 		"BEND MOMENTS" : [bendMomentList, True]
 	}
 

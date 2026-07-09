@@ -55,6 +55,7 @@ class Task:
                 if (load.distance2 != self.length):
                     self.dotList.append(load.distance2 + self.BIAS)
 
+                # Сохраним положение распределенной нагрузки
                 distrDots.append((load.distance, load.distance2))
                 self.dotList.append((load.distance + load.distance2)/2)
 
@@ -63,6 +64,8 @@ class Task:
                     self.dotList.append(load.distance - self.BIAS)
                 if (load.distance != self.length):
                     self.dotList.append(load.distance + self.BIAS)
+
+                # Промежутчные точки для распределенной нагрузки
                 if (distrDots):
                     for d1, d2 in distrDots:
                         if (load.distance == d1 or load.distance == d2):

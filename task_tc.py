@@ -45,8 +45,8 @@ def TensionCompressionAlgorithm(self):
 
 	# Булево значение "изобразить на эпюре"
 	solution = {
-		"NORM POWERS" : [normalForceList, True],
-		"NORM TENSIONS" : [normalStressList, True],
+		"NORMAL FORCES" : [normalForceList, True],
+		"NORMAL STRESS" : [normalStressList, True],
 		"DEFORMATIONS" : [deformationList, False],
 		"DISPLACEMENTS" : [displacementList, True],
 		"SAFETY FACTOR" : [safetyFactor, False]

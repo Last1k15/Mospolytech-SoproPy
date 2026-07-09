@@ -1,6 +1,7 @@
 from section import *
 from load import *
 import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
 
 # Вывести заголок
 def printHeader(header=''):
@@ -68,7 +69,7 @@ def plotDiagram(self, solution):
 		if (v[1] == False):
 			continue
 
-		plt.figure(i)
+		plt.figure(i, figsize=(8,6), dpi=100)
 		i += 1
 		plt.title(k)
 		ax = plt.gca()
@@ -81,12 +82,20 @@ def plotDiagram(self, solution):
 		plt.xticks(list(set([round(n, 3) for n in self.dotList])))
 		plt.yticks(v[0])
 
-		plt.plot(self.dotList, v[0], 'o-', linewidth=3, color="lightblue") # изобразим эпюру, выделим точки
-		plt.plot(self.dotList, [0]*len(self.dotList), linewidth=5, color="orange") # изобразим стержень
+		plt.plot(self.dotList, [0]*len(self.dotList), linewidth=5, color="black") # изобразим стержень
+
+		self.dotList.append(self.length)
+		v[0].append(0)
+		self.dotList.append(0)
+		v[0].append(0)
+
+		polygon = Polygon([list(pair) for pair in zip(self.dotList, v[0])], closed=True, fill=False, hatch='|', edgecolor='black')
+		ax.add_patch(polygon)
+		# plt.plot(self.dotList, v[0], 'o-', linewidth=3, color="lightblue") # изобразим эпюру, выделим точки
 
 		for (xi, mi) in zip(self.dotList, v[0]):
 			ax.annotate(f'{mi:.1e}', (xi, mi), textcoords="offset points", xytext=(0, 10 if mi >= 0 else -15), 
-						ha='center', fontsize=12, color='black')
+						ha='center', fontsize=8, color='black')
 
 	plt.show()
 
