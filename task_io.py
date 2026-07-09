@@ -71,17 +71,22 @@ def plotDiagram(self, solution):
 		plt.figure(i)
 		i += 1
 		plt.title(k)
+		ax = plt.gca()
+		ax.grid(True, linestyle=':', alpha=0.7)
 
 		# Научная нотация
 		plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
 
-		print(k)
 		# На оси абсцисс предотвратим наложение смежных величин, отличных на BIAS - округлим и удалим дубликаты
 		plt.xticks(list(set([round(n, 3) for n in self.dotList])))
 		plt.yticks(v[0])
 
-		plt.plot(self.dotList, v[0], 'o-') # изобразим эпюру, выделим точки
-		plt.plot(self.dotList, [0]*len(self.dotList)) # изобразим стержень
+		plt.plot(self.dotList, v[0], 'o-', linewidth=3, color="lightblue") # изобразим эпюру, выделим точки
+		plt.plot(self.dotList, [0]*len(self.dotList), linewidth=5, color="orange") # изобразим стержень
+
+		for (xi, mi) in zip(self.dotList, v[0]):
+			ax.annotate(f'{mi:.1e}', (xi, mi), textcoords="offset points", xytext=(0, 10 if mi >= 0 else -15), 
+						ha='center', fontsize=12, color='black')
 
 	plt.show()
 
